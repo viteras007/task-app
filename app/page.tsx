@@ -1,10 +1,14 @@
-import Image from "next/image";
-import {Button} from "@/components/ui/button";
+'use client'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function Home() {
-  return (
-    <div className='flex h-screen w-full items-center justify-center'>
-      <Button>Click me</Button>
-    </div>
-  );
+  const router = useRouter()
+
+  useEffect(() => {
+    // Redireciona para a rota /tasks quando o componente montar
+    router.push('/tasks')
+  }, [])
+
+  return null
 }
