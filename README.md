@@ -19,4 +19,5 @@
 - [ ] Add a button to edit a task
 - [ ] Add statistics page, measuring how many tasks the person concluded in a week, month, year, and how much tasks he already finished and unfinished in 24 hours
 - [ ] After 24 hours, the tasks that were not completed will be moved to history as incomplete, if click in edit on history page could be able to change status
-- [ ] Create an backend inside next project, IDK yet about prismaORM + postgres or strapi CMS
+- [ ] Create a backend inside next project, IDK yet about prismaORM + postgres or strapi CMS
+- [ ] Create auth with google using next-auth
