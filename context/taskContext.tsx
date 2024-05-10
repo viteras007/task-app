@@ -1,16 +1,15 @@
 'use client'
 import React, { createContext, useEffect, useState } from 'react'
-
-export interface Task {
-  id: number
-  title: string
-  status: 'todo' | 'done'
-  createdAt: Date
-}
+import { ITask } from '@/app/(dashboard)/tasks/model/task.model'
+import {
+  addTaskService,
+  deleteTaskService,
+  getTasksService,
+} from '@/service/task'
 
 export interface TaskContextType {
-  tasks: Task[]
-  addTask: (newTask: Task) => void
+  tasks: ITask[]
+  addTask: (newTask: ITask) => void
   removeTask: (taskId: number) => void
   changeTaskStatus: (taskId: number) => void
 }
@@ -22,10 +21,7 @@ interface TaskProviderProps {
 }
 
 export const TaskProvider = ({ children }: TaskProviderProps) => {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const storedTasks = localStorage.getItem('task-app:tasks')
-    return storedTasks ? JSON.parse(storedTasks) : []
-  })
+  const [tasks, setTasks] = useState<ITask[]>([])
 
   const changeTaskStatus = (taskId: number) => {
     const taskIndex = tasks.findIndex((task) => task.id === taskId)
@@ -43,18 +39,27 @@ export const TaskProvider = ({ children }: TaskProviderProps) => {
     setTasks(updatedTasks)
   }
 
-  const addTask = (newTask: Task) => {
-    setTasks([...tasks, newTask])
+  async function addTask(newTask: ITask) {
+    await addTaskService(newTask).then((data: ITask[]) => {
+      setTasks(data)
+    })
   }
 
-  const removeTask = (taskId: number) => {
-    const updatedTasks = tasks.filter((task) => task.id !== taskId)
-    setTasks(updatedTasks)
+  async function removeTask(taskId: number) {
+    await deleteTaskService(taskId).then((data: ITask[]) => {
+      setTasks(data)
+    })
   }
 
   useEffect(() => {
-    localStorage.setItem('task-app:tasks', JSON.stringify(tasks))
-  }, [tasks])
+    async function fetchTasks() {
+      await getTasksService().then((data: ITask[]) => {
+        setTasks(data)
+      })
+    }
+    fetchTasks()
+  }, [])
+
   return (
     <TaskContext.Provider
       value={{ tasks, addTask, removeTask, changeTaskStatus }}

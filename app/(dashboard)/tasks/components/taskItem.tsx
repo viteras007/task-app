@@ -1,9 +1,9 @@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Trash } from 'lucide-react'
-import { Task } from '@/context/taskContext'
 import { useTask } from '@/hooks/useTask'
+import { ITask } from '@/app/(dashboard)/tasks/model/task.model'
 
-export default function TaskItem(task: Task) {
+export default function TaskItem(task: ITask) {
   const { changeTaskStatus, removeTask } = useTask()
   return (
     <div
