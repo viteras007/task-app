@@ -1,6 +1,6 @@
 ## Features
-1. Task list
-2. List of tasks saved on local storage
+- [x] Task list
+- [x] List of tasks saved on local storage
 
 ## Future Features:
 - Auth
