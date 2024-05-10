@@ -14,7 +14,10 @@ import { useTask } from '@/hooks/useTask'
 import * as z from 'zod'
 
 const schema = z.object({
-  name: z.string().min(3).max(50).nonempty(),
+  name: z
+    .string()
+    .min(3, { message: 'Task name should have at least 3 characters' })
+    .max(50, { message: 'Task name should have less than 50 characters' }),
 })
 
 export type FormData = z.infer<typeof schema>
@@ -24,9 +27,11 @@ export default function AddTaskDialog() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors, isValid },
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onChange',
   })
 
   function onSubmit(data: FormData) {
@@ -34,6 +39,10 @@ export default function AddTaskDialog() {
       id: Math.floor(Math.random() * 1000),
       title: data.name,
       status: 'todo',
+      createdAt: new Date(Date.now()),
+    })
+    reset({
+      name: '',
     })
   }
   return (
@@ -46,13 +55,14 @@ export default function AddTaskDialog() {
         <div className="flex flex-col items-start gap-4">
           <Label htmlFor="name">Task</Label>
           <Input id="name" {...register('name')} />
+          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
         </div>
       </div>
       <DialogFooter>
         <Button
           type="submit"
           onClick={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
+          disabled={!isValid || isSubmitting}
         >
           Add
         </Button>

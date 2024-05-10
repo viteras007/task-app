@@ -14,7 +14,9 @@ export default function TaskItem(task: Task) {
         onClick={() => changeTaskStatus(task.id)}
         checked={task.status === 'done'}
       />
-      <span>{task.title}</span>
+      <span className={task.status === 'done' ? 'line-through' : ''}>
+        {task.title}
+      </span>
 
       <div className="ml-auto">
         <Trash
