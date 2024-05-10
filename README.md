@@ -9,3 +9,4 @@
 - Dashboard with statistics 
 - Tasks with categories
 - History of tasks
+- Open a sheet to show details of task

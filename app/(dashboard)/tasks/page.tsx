@@ -1,45 +1,12 @@
 'use client'
-import { Plus, Trash } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
+import { Plus } from 'lucide-react'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { useTask } from '@/hooks/useTask'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { Checkbox } from '@/components/ui/checkbox'
-
-const schema = z.object({
-  name: z.string().min(3).max(50).nonempty(),
-})
-
-type FormData = z.infer<typeof schema>
+import TaskItem from '@/app/(dashboard)/tasks/taskItem'
+import AddTaskDialog from '@/app/(dashboard)/tasks/addTaskDialog'
 
 export default function Tasks() {
-  const { tasks, addTask, changeTaskStatus, removeTask } = useTask()
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  })
-
-  function onSubmit(data: FormData) {
-    addTask({
-      id: Math.floor(Math.random() * 1000),
-      title: data.name,
-      status: 'todo',
-    })
-  }
+  const { tasks } = useTask()
 
   return (
     <Dialog>
@@ -63,50 +30,11 @@ export default function Tasks() {
           </div>
         </div>
         <div className="flex flex-col w-full text-md">
-          {tasks &&
-            tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex w-full gap-4 border-b border-slate-200 px-4 py-2 items-center "
-              >
-                <Checkbox
-                  onClick={() => changeTaskStatus(task.id)}
-                  checked={task.status === 'done'}
-                />
-                <span>{task.title}</span>
-
-                <div className="ml-auto">
-                  <Trash
-                    className="w-4 h-4 cursor-pointer text-red-500"
-                    onClick={() => removeTask(task.id)}
-                  />
-                </div>
-              </div>
-            ))}
+          {tasks && tasks.map((task) => <TaskItem key={task.id} {...task} />)}
         </div>
       </div>
 
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
-        </DialogHeader>
-
-        <div className="grid gap-4 py-4">
-          <div className="flex flex-col items-start gap-4">
-            <Label htmlFor="name">Task</Label>
-            <Input id="name" {...register('name')} />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            type="submit"
-            onClick={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
-          >
-            Add
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      <AddTaskDialog />
     </Dialog>
   )
 }
